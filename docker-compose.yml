@@ -1,0 +1,10 @@
+version: '3'
+services:
+  gtm_web_server:
+    build:
+      context: .
+    container_name: gtm_web_server
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
