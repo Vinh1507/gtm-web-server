@@ -1,6 +1,6 @@
 import { combineReducers } from "redux";
-import contestReducer from "./contestReducer";
+import domainReducer from "./domainReducer";
 const core = combineReducers({
-  contestReducer,
+  domainReducer,
 });
 export default core;

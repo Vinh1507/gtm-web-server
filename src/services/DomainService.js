@@ -14,6 +14,12 @@ class DomainServiceClass {
     const response = await ApiService.get(url);
     return response;
   }
+  async createResolver(data) {
+    if(!data) return null;
+    const url = `${DomainApiConstant.CREATE_RESOVLER_URL}`;
+    const response = await ApiService.post(url, data);
+    return response;
+  }
 }
 
 const DomainService = new DomainServiceClass();

@@ -1,4 +1,4 @@
-import ContestListing from "../view/components/contest-list/ContestListing";
+import DomainListing from "../view/components/domain/DomainListing";
 const MenuConfig = {
   getMenuItem() {
 
@@ -20,10 +20,10 @@ const MenuConfig = {
    */
   items: [
     {
-      id: "contests",
-      title: "Contests",
-      path: "/contests",
-      component: ContestListing,
+      id: "domains",
+      title: "Domains",
+      path: "/domains",
+      component: DomainListing,
       className: "checkout",
       sortOrder: 10,
     },

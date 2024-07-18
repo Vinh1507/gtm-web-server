@@ -19,7 +19,7 @@ class DomainActionClass {
   getDomainListSuccess(data){
     return {
       type: DomainConstant.GET_DOMAIN_LIST_SUCCESS,
-      contestList: data.items,
+      domainList: data.items,
       pageInfo: data.page_info,
     };
   }
@@ -55,7 +55,7 @@ class DomainActionClass {
   getDomainDetailSuccess(data){
     return {
       type: DomainConstant.GET_DOMAIN_DETAIL_SUCCESS,
-      contestDetail: data.contest,
+      domainDetail: data.domain,
     };
   }
 
@@ -71,7 +71,49 @@ class DomainActionClass {
       type: DomainConstant.GET_DOMAIN_DETAIL_FAILED,
     };
   }
+
+  createResolver(data){
+    return async (dispatch) => {
+      try {
+        dispatch({
+          type: DomainConstant.CREATE_RESOLVER,
+        });
+        const response = await DomainService.createResolver(data);
+        dispatch(this.createResolverSuccess(response.data));
+      } catch (error) {
+        console.log(error);
+        dispatch(this.createResolverFailed(error));
+      }
+    };
+  }
+
+  createResolverSuccess(data){
+    toast.success(
+      `Create resolver ${data.domain.DomainName} successfully!`,
+      {
+        position: toast.POSITION.TOP_RIGHT,
+        className: 'wrapper-messages messages-error',
+      },
+    );
+    return {
+      type: DomainConstant.CREATE_RESOLVER_SUCCESS,
+    };
+  }
+
+  createResolverFailed(error){
+    toast.error(
+      `${error.message}`,
+      {
+        position: toast.POSITION.TOP_RIGHT,
+        className: 'wrapper-messages messages-error',
+      },
+    );
+    return {
+      type: DomainConstant.CREATE_RESOLVER_FAILED,
+      errorMessage: error.message,
+    };
+  }
 }
 
-const contestAction = new DomainActionClass();
-export default contestAction;
+const domainAction = new DomainActionClass();
+export default domainAction;
