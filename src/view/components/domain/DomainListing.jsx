@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { Button, Card, Form, Input, InputNumber, Modal, Select, Table } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import domainAction from '../../actions/DomainAction';
-import { useNavigate } from 'react-router-dom';
 import { Option } from 'antd/es/mentions';
 import _ from 'lodash';
 import { isValidIP } from '../../../utils/validateIP';
+import { useNavigate } from 'react-router-dom';
 
 function DomainListing() {
   const { domainList, isLoadingDomain, isCreatingResolver } = useSelector(state => state.domainReducer.domainList);
@@ -15,11 +15,19 @@ function DomainListing() {
   }, []);
 
   const navigate = useNavigate();
-  const handleParticipateDomain = (id) => {
+  const handleResolverDetail = (id) => {
     navigate(`/domains/${id}`);
   };
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [resolver, setResolver] = useState({
+    domainName: '',
+    policy: '',
+    ttl: '',
+  });
+
+  const [dataCenters, setDataCenters] = useState([]);
+  const [numberOfDC, setNumberOfDC] = useState(0);
 
   const openCreateResolverModal = () => {
     setIsModalOpen(true);
@@ -39,25 +47,19 @@ function DomainListing() {
 
   const columns = [
     {
-      title: 'ID',
-      dataIndex: 'id',
-      key: 'id',
+      title: 'Domain',
+      dataIndex: 'domainName',
+      key: 'domainName',
     },
     {
-      title: 'Tiêu đề',
-      dataIndex: 'title',
-      key: 'title',
-      render: (text) => <a>{text}</a>,
+      title: 'Policy',
+      dataIndex: 'policy',
+      key: 'policy',
     },
     {
-      title: 'Bắt đầu',
-      dataIndex: 'openTime',
-      key: 'openTime',
-    },
-    {
-      title: 'Kết thúc',
-      dataIndex: 'closeTime',
-      key: 'closeTime',
+      title: 'TTL',
+      dataIndex: 'ttl',
+      key: 'ttl',
     },
     {
       title: 'Thao tác',
@@ -67,25 +69,14 @@ function DomainListing() {
       render: (_, item) => {
         return (
           <>
-            <Button type="primary" size="large" onClick={() => handleParticipateDomain(item.id)}>
-              Bắt đầu
+            <Button type="link" size="large" onClick={() => handleResolverDetail(item.id)}>
+              Detail
             </Button>
           </>
         );
       },
     }
   ];
-
-
-
-  const [resolver, setResolver] = useState({
-    domainName: '',
-    policy: '',
-    ttl: '',
-  });
-
-  const [dataCenters, setDataCenters] = useState([]);
-  const [numberOfDC, setNumberOfDC] = useState(0);
 
   const setDataCenterInfo = (index, key, value) => {
     const dataCenterData = _.cloneDeep(dataCenters);
@@ -127,7 +118,6 @@ function DomainListing() {
   };
 
   const getDataCenterInfoTemplate = () => {
-    
     return (
       <>
         {
@@ -185,8 +175,6 @@ function DomainListing() {
       </>
     );
   }; 
-
-  console.log(resolver);
   
   return (
     <div className="container" >

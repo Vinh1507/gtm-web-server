@@ -19,8 +19,7 @@ class DomainActionClass {
   getDomainListSuccess(data){
     return {
       type: DomainConstant.GET_DOMAIN_LIST_SUCCESS,
-      domainList: data.items,
-      pageInfo: data.page_info,
+      domainList: data.resolvers,
     };
   }
 
@@ -55,7 +54,8 @@ class DomainActionClass {
   getDomainDetailSuccess(data){
     return {
       type: DomainConstant.GET_DOMAIN_DETAIL_SUCCESS,
-      domainDetail: data.domain,
+      resolver: data.resolver,
+      dataCenterHistory: data.dataCenterHistory,
     };
   }
 

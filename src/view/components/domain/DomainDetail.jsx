@@ -1,58 +1,78 @@
 import React, { useEffect } from 'react';
-import { Table } from 'antd';
-import { useDispatch, useSelector } from 'react-redux';
+import { Tabs, Table } from 'antd';
 import domainAction from '../../actions/DomainAction';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import Loading from '../Loading.jsx';
+import { useParams } from 'react-router-dom';
+import moment from 'moment';
+const { TabPane } = Tabs;
 
 function DomainDetail(){
-  const {domainDetail, isLoadingDomainDetail} = useSelector(state => state.domainReducer.domainDetail);
+  const { domainDetail, dataCenterHistory, isLoadingDomainDetail } = useSelector(state => state.domainReducer.domainDetail);
   const dispatch = useDispatch();
-
   const { id } = useParams();
   useEffect(() => {
-    if(!id){
-      return;
-    }
-    dispatch(domainAction.getDomainDetail({id}));
-  }, [id]);
+    const interval = setInterval(() => {
+      dispatch(domainAction.getDomainDetail({id}));
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
 
-
-  const navigate = useNavigate();
-  function handleClickIssue(code){
-    dispatch(domainAction.setIssueLoading(true));
-    navigate('issues/' + code);
-  }
-  
   const columns = [
     {
-      title: 'Mã',
-      dataIndex: 'code',
-      key: 'code',
+      title: 'Data Center',
+      dataIndex: 'dataCenterName',
+      key: 'dataCenterName',
     },
     {
-      title: 'Tiêu đề',
-      dataIndex: 'title',
-      key: 'title',
-      render: (_, item) => <a href="" style={{fontSize: '18px', textDecoration: 'none'}} onClick={() => handleClickIssue(item.code)}>{item.title.toUpperCase()}</a>,
+      title: 'Health Check Url',
+      dataIndex: 'healthCheckUrl',
+      key: 'healthCheckUrl',
+    },
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      key: 'status',
+    },
+    {
+      title: 'Response Code',
+      dataIndex: 'responseCode',
+      key: 'responseCode',
+    },
+    {
+      title: 'Reason',
+      dataIndex: 'reason',
+      key: 'reason',
+    },
+    {
+      title: 'Time',
+      dataIndex: 'timestamp',
+      key: 'timestamp',
+      render: (timestamp) => moment(timestamp).format('MMMM Do YYYY, h:mm:ss A Z'),
     },
   ];
+  if (isLoadingDomainDetail && !domainDetail) {
+    return <Loading />;
+  }
 
-  const getStatusColor = (item) => {
-    const data = domainDetail.domain_issues.find(domain_issue => domain_issue.issue.code === item.code);
-    const status = data.submitStatus;
-    if (status === 1) return 'submition submit-accepted-bg';
-    if (status === 2) return 'submition submit-wrong-bg'; 
-    return 'submition';
-  };
+  console.log(dataCenterHistory);
   return (
-    <div className="container">
-      <Table 
-        columns={columns} 
-        dataSource={domainDetail?.domain_issues?.map(item => item.issue)} 
-        rowClassName={(record) => getStatusColor(record)}
-        loading={isLoadingDomainDetail} 
-        pagination={false}/>
-    </div>
+    <>
+      <div className="container" >
+        <Tabs>
+          <TabPane tab="Resolver Info" key="1">
+            <div>
+              <p><strong>Domain Name:</strong> {domainDetail.domainName}</p>
+              <p><strong>TTL:</strong> {domainDetail.ttl} second(s)</p>
+              <p><strong>Policy:</strong> {domainDetail.policy}</p>
+            </div>
+          </TabPane>
+          <TabPane tab="Resolver History" key="2">
+            <Table dataSource={dataCenterHistory} columns={columns} pagination={false} />
+          </TabPane>
+        </Tabs>
+      </div>
+    </>
   );
 }
 export default DomainDetail;

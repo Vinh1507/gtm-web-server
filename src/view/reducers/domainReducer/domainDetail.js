@@ -1,8 +1,8 @@
 import DomainConstant from "../../constants/DomainConstant";
 const initialState = {
   domainDetail: {},
+  dataCenterHistory: [],
   isLoadingDomainDetail: false,
-  pageInfo: {},
 };
 
 export default function (state = initialState, action) {
@@ -17,8 +17,8 @@ export default function (state = initialState, action) {
     return {
       ...state,
       isLoadingDomainDetail: false,
-      domainDetail: action.domainDetail,
-      pageInfo: action.pageInfo,
+      domainDetail: action.resolver,
+      dataCenterHistory: action.dataCenterHistory,
     };
   }
   case DomainConstant.GET_DOMAIN_DETAIL_FAILED: {
